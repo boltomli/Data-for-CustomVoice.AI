@@ -70,4 +70,4 @@ Archive files to upload should contain wave files only. Take [7-Zip](https://www
 
 ## Advanced data processing
 
-This basic guide assumes each wave contains one sentence (so the text is also one sentence per line). If you have only a big media file with many sentences, it should be pre-processed.
+This basic guide assumes each wave contains one sentence (so the text is also one sentence per line). If you have only a big media file with many sentences, it should be pre-processed. See [advanced](code/README.md) for hints.
