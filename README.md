@@ -1,18 +1,18 @@
-# Data preparation for CustomVoice.AI
+# CustomVoice.AI 数据准备
 
-## Goal
+## 目标
 
-Provide a working end-to-end sample process of how to prepare data for [Custom Voice](https://customvoice.ai) powered by Microsoft Azure Cognitive Services. Target audience: developers that are not quite familiar with audio processing.
+提供一个示例，帮助准备语音与文本数据，以便在基于微软Azure的[Custom Voice](https://customvoice.ai)上提交并训练自己的TTS模型。
 
-## Data formats
+## 数据格式
 
-* Text
+* 文本
 
-  Text files should be saved with UTF-16 little endian encoding at the moment. Most modern text editor should be able to handle this. Take [Visual Studio Code](https://code.visualstudio.com) as an example. Bring up `Command Pallette` in `View` menu item (shortcut: `⇧⌘P` or `Ctrl+Shift+P`), type in `Change File Encoding`, select `Save with Encoding`, then `UTF-16 LE`. UTF-8 with or without BOM would be supported in future but not working yet.
+  目前，需要用UTF-16LE编码文本文件。Windows上可以用Notepad另存为Unicode。常用的文本编辑器都有转换编码的功能，比如[Visual Studio Code](https://code.visualstudio.com)。对换行符并没有特定要求，经过试验，LF或CRLF都可以。
 
-* Audio
+* 语音
 
-  Audio files should be saved as 16k sampling rate 16-bit depth mono PCM wave with .wav extension. Typical format information as viewed in [MediaInfo](https://mediaarea.net/en/MediaInfo):
+  音频文件需要用PCM格式存储，扩展名为.wav，采样率16k，位深16-bit，单声道。用[MediaInfo](https://mediaarea.net/en/MediaInfo)可以看到如下参数:
 
 ```text
 Format                                   : PCM
@@ -27,16 +27,16 @@ Bit depth                                : 16 bits
 Stream size                              : 258 KiB (100%)
 ```
 
-  If collected audio is in other formats, [FFmpeg](https://www.ffmpeg.org) and [SoX](http://sox.sourceforge.net) will be helpful in conversion.
+  [FFmpeg](https://www.ffmpeg.org)可以用来转换和提取音频至PCM Wave，[SoX](http://sox.sourceforge.net)可以进一步规范格式。
 
 ```shell
 ffmpeg -i sourcemedia.mp4 targetaudio.wav
 sox targetaudio.wav -c 1 -r 16000 -b 16 00001.wav --norm -R
 ```
 
-## Data structure
+## 目录结构
 
-It's recommended that the audio files and correspondent text scripts are collected and organized per batch. This way the uploading of each batch can be faster and it'll be easier to identify and fix issues. It'll also enable custom voice model creation using different sets of data. Multiple data sets selection is supported so if there's no overlap between batches, you can still use all the data for one model.
+建议分批组织和上传数据。上传文件的大小有限制，目前一批上传的录音最好不超过两个小时。模型训练的时候可以选择多批数据，只要没有重复ID。
 
 ```text
 .
@@ -57,17 +57,17 @@ It's recommended that the audio files and correspondent text scripts are collect
 └── text_batch3.txt
 ```
 
-Content of `text_batch1.txt` is like:
+`text_batch1.txt`的内容如下：
 
 ```text
-01001	Text of the first sentence is here.
-01002	Is this the last sentence of the batch?
+01001	这是第一句话。
+01002	这是最后一句话吗？
 ```
 
-Note that the ID in text must match the wave file name without extension. Between ID and sentence there is a `Tab` but not spaces. There should be exactly one `Tab` in each line.
+ID要和声音文件的文件名一致（不带扩展名），ID与文本之间要有一个制表符（不能是空格或者几个空格）。
 
-Archive files to upload should contain wave files only. Take [7-Zip](https://www.7-zip.org) as an example, run the command in each batch folder `cd batch1 && 7z a batch1.zip *.wav`.
+上传的压缩文件里不能有任何目录，空目录也不行。建议使用[7-Zip](https://www.7-zip.org)，可以在每一批声音的文件夹里运行命令：`cd batch1 && 7z a batch1.zip *.wav`
 
-## Advanced data processing
+## 其它处理
 
-This basic guide assumes each wave contains one sentence (so the text is also one sentence per line). If you have only a big media file with many sentences, it should be pre-processed. See [advanced](code/README.md) for hints.
+如果一个音频文件对应了很多句话，建议事先把音频按照句子切割，可参考[advanced](code/README.md)
