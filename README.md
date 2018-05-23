@@ -36,7 +36,7 @@ sox targetaudio.wav -c 1 -r 16000 -b 16 00001.wav --norm -R
 
 ## Data structure
 
-It's likely that the audio files and correspondent text scripts are collected and organized per batch.
+It's recommended that the audio files and correspondent text scripts are collected and organized per batch. This way the uploading of each batch can be faster and it'll be easier to identify and fix issues. It'll also enable custom voice model creation using different sets of data. Multiple data sets selection is supported so if there's no overlap between batches, you can still use all the data for one model.
 
 ```text
 .
