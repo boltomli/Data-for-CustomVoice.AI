@@ -1,18 +1,14 @@
-# Advances data processing
+# 进阶数据处理
 
-## Goal
+## 目标
 
-Given a big audio file and the text scripts, show a way to split the audio to small pieces according to text segments (forced alignment).
+处理特别的情况。
 
-## Data
+* 把一个包含很多句录音的媒体文件与文本对齐，以便切分为多个文件，每句对应一行文本。
 
-One audio file and the text scripts with only speech part in it. Better keep just one sentence per line.
+## 对齐的参考实现
 
-If no data at hand, try the example from [Aeneas repo](https://github.com/readbeyond/aeneas/tree/devel) or grab one from [LibriVox](https://librivox.org).
-
-## Usage
-
-Run in Python 3 virtualenv is recommended. Install espeak development files first if there's error installing aeneas. Once the forced alignment is generated, you can split the audio according to the time information.
+音视频文件应只包含人声，音效、音乐等需事先另行去除，可使用音频编辑软件，如[Audacity](https://www.audacityteam.org)。文本文件应只包含录音的脚本，没有ID等额外信息，建议每句一行。成功安装和使用[Aeneas](https://github.com/readbeyond/aeneas)需要[espeak](https://sourceforge.net/projects/espeak/)。
 
 ```shell
 virtualenv venv
