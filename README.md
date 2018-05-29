@@ -4,6 +4,8 @@
 
 Provide a working end-to-end sample process of how to prepare data for [Custom Voice](https://customvoice.ai) powered by Microsoft Azure Cognitive Services. Target audience: developers that are not quite familiar with audio processing.
 
+[中文版文档 for Chinese version](tree/zh-CN)
+
 ## Data formats
 
 * Text
