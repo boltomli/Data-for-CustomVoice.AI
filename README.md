@@ -10,11 +10,11 @@ Provide a working end-to-end sample process of how to prepare data for [Custom V
 
 * Text
 
-  Text files should be saved with UTF-16 little endian encoding at the moment. Most modern text editor should be able to handle this. Take [Visual Studio Code](https://code.visualstudio.com) as an example. Bring up `Command Pallette` in `View` menu item (shortcut: `⇧⌘P` or `Ctrl+Shift+P`), type in `Change File Encoding`, select `Save with Encoding`, then `UTF-16 LE`. UTF-8 with or without BOM would be supported in future but not working yet.
+  Text files can be in most common encodings now as Azure custom voice service is updated. For examples, UTF-8/UTF-16LE/UTF-8 with BOM. Most modern text editor should be able to handle this. Take [Visual Studio Code](https://code.visualstudio.com) as an example. Bring up `Command Pallette` in `View` menu item (shortcut: `⇧⌘P` or `Ctrl+Shift+P`), type in `Change File Encoding`, select `Save with Encoding`, then `UTF-16 LE`.
 
 * Audio
 
-  Audio files should be saved as 16k sampling rate 16-bit depth mono PCM wave with .wav extension. Typical format information as viewed in [MediaInfo](https://mediaarea.net/en/MediaInfo):
+  Audio files should be saved as at least 16k sampling rate 16-bit depth mono PCM wave with .wav extension. Waves with higher sampling rate can be uploaded now to the portal. Typical format information as viewed in [MediaInfo](https://mediaarea.net/en/MediaInfo):
 
 ```text
 Format                                   : PCM
