@@ -8,11 +8,11 @@
 
 * 文本
 
-  目前，需要用UTF-16LE编码文本文件。Windows上可以用Notepad另存为Unicode。常用的文本编辑器都有转换编码的功能，比如[Visual Studio Code](https://code.visualstudio.com)。对换行符并没有特定要求，经过试验，LF或CRLF都可以。
+  Azure custom voice服务已经更新，支持常见的文本编码，如UTF-8/UTF-16LE/UTF-8 with BOM等。Windows上用Notepad另存为Unicode或UTF-8都可以。常用的文本编辑器都有转换编码的功能，比如[Visual Studio Code](https://code.visualstudio.com)。对换行符并没有特定要求，经过试验，LF或CRLF都可以。
 
 * 语音
 
-  音频文件需要用PCM格式存储，扩展名为.wav，采样率16k，位深16-bit，单声道。用[MediaInfo](https://mediaarea.net/en/MediaInfo)可以看到如下参数:
+  音频文件需要用PCM格式存储，扩展名为.wav，采样率至少16k，位深16-bit，单声道。采样率超过16k也可以，如常见的44k/48k等。用[MediaInfo](https://mediaarea.net/en/MediaInfo)可以看到如下参数:
 
 ```text
 Format                                   : PCM
