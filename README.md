@@ -8,7 +8,7 @@
 
 * 文本
 
-  Azure custom voice服务已经更新，支持常见的文本编码，如UTF-8/UTF-16LE/UTF-8 with BOM等。Windows上用Notepad另存为Unicode或UTF-8都可以。常用的文本编辑器都有转换编码的功能，比如[Visual Studio Code](https://code.visualstudio.com)。对换行符并没有特定要求，经过试验，LF或CRLF都可以。
+  Azure custom voice服务已经更新，支持常见的文本编码，如UTF-8/UTF-16LE/UTF-8 with BOM等。Windows上用Notepad另存为Unicode或UTF-8都可以。常用的文本编辑器都有转换编码的功能，比如[Visual Studio Code](https://code.visualstudio.com)。对换行符并没有特定要求，经过试验，LF或CRLF都可以。但是对于中文文档，需要特别注意不能使用Windows默认的GB2312编码，可以参考[文本编码转换](code/text-encoding-converter/README.md)里面的代码实现转换，或者在保存的时候就选择UTF-8或UTF-16-LE。
 
 * 语音
 

@@ -1,0 +1,5 @@
+Flask
+flask-restplus
+Flask-Uploads
+python-magic
+requests
