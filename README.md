@@ -10,7 +10,7 @@ Provide a working end-to-end sample process of how to prepare data for [Custom V
 
 * Text
 
-  Text files can be in most common encodings now as Azure custom voice service is updated. For examples, UTF-8/UTF-16LE/UTF-8 with BOM. Most modern text editor should be able to handle this. Take [Visual Studio Code](https://code.visualstudio.com) as an example. Bring up `Command Pallette` in `View` menu item (shortcut: `⇧⌘P` or `Ctrl+Shift+P`), type in `Change File Encoding`, select `Save with Encoding`, then `UTF-16 LE`.
+  Text files can be in most common encoding methods now as Azure custom voice service is updated. For examples, UTF-8/UTF-16LE/UTF-8 with BOM. Most modern text editor should be able to handle this. Take [Visual Studio Code](https://code.visualstudio.com) as an example. Bring up `Command Palette` in `View` menu item (shortcut: `⇧⌘P` or `Ctrl+Shift+P`), type in `Change File Encoding`, select `Save with Encoding`, then `UTF-16 LE`.
 
 * Audio
 
@@ -72,4 +72,4 @@ Archive files to upload should contain wave files only. Take [7-Zip](https://www
 
 ## Advanced data processing
 
-This basic guide assumes each wave contains one sentence (so the text is also one sentence per line). If you have only a big media file with many sentences, it should be pre-processed. See [advanced](code/README.md) for hints.
+This basic guide assumes each wave contains one sentence (so the text is also one sentence per line). If you have only a big media file with many sentences, it should be preprocessed. See [advanced](code/README.md) for hints.
