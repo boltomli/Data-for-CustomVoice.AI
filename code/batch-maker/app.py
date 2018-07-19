@@ -2,13 +2,15 @@
 
 # -*- coding: utf-8 -*-
 
-'''This is the main module for the app'''
+'''Match valid script ID and wave files to create batches to upload.'''
 
 import argparse
-from os import listdir
-from os.path import isdir, isfile, join, exists
-import chardet
 import codecs
+from os import walk
+from os.path import exists, isdir, isfile, join, splitext
+
+import chardet
+
 
 def process_script_file(script_file):
     '''Read script file file as text'''
@@ -19,6 +21,7 @@ def process_script_file(script_file):
         text_encoding = 'utf-16'
     text_content = codecs.open(script_file, 'r', encoding=text_encoding).readlines()
     return text_content
+
 
 def process_script_line(script_item):
     '''
@@ -34,7 +37,8 @@ def process_script_line(script_item):
             script_dict.update({item[0]: item[1]})
     return script_dict
 
-def process_script_dict(script_dict, update_dict):
+
+def process_dict(script_dict, update_dict):
     '''Add if ID is not found. Remove if ID is found.'''
     for item in update_dict:
         if item in script_dict.keys():
@@ -42,6 +46,7 @@ def process_script_dict(script_dict, update_dict):
         else:
             script_dict.update({item: update_dict[item]})
     return script_dict
+
 
 def process_script(path):
     '''
@@ -52,13 +57,24 @@ def process_script(path):
     if isfile(path):
         text = process_script_file(path)
         for line in text:
-            script_dict = process_script_dict(script_dict, process_script_line(line))
+            script_dict = process_dict(script_dict, process_script_line(line))
     else:
-        for f in [join(path, f) for f in listdir(path) if isfile(join(path, f))]:
-            text = process_script_file(f)
-            for line in text:
-                script_dict = process_script_dict(script_dict, process_script_line(line))
+        for r,d,f in walk(path):
+            for filename in f:
+                text = process_script_file(filename)
+                for line in text:
+                    script_dict = process_dict(script_dict, process_script_line(line))
     return script_dict
+
+
+def process_wave(path):
+    wave_dict = {}
+    for r,d,f in walk(path):
+        for filename in f:
+            item = splitext(filename)
+            if item[0].isdigit() and item[1].lower() == '.wav':
+                wave_dict = process_dict(wave_dict, {item[0]: join(path, filename)})
+    return wave_dict
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -73,6 +89,6 @@ if __name__ == '__main__':
 
     if isdir(args.wave) and exists(args.text):
         script_dict = process_script(args.text)
-        print(len(script_dict))
+        wave_dict = process_wave(args.wave)
     else:
         parser.print_help()
