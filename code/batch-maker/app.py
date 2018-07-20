@@ -11,6 +11,7 @@ from os.path import exists, getsize, isdir, isfile, join, splitext
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import chardet
+from tqdm import tqdm
 
 
 def process_script_file(script_file):
@@ -83,7 +84,7 @@ def save_zip_script(filename, id_list, wave_dict, script_dict):
     script_file = open(filename+'.txt', 'wb')
     script_file.write(codecs.BOM_UTF16_LE)
     zip_file = ZipFile(filename+'.zip', 'w', compression=ZIP_DEFLATED)
-    for i in id_list:
+    for i in tqdm(id_list):
         script_file.write((i+'\t'+script_dict[i]+'\n').encode('utf-16-le'))
         zip_file.write(wave_dict[i], arcname=i+'.wav')
     script_file.close()
@@ -104,7 +105,7 @@ if __name__ == '__main__':
                         help='Directory to save zipped data.')
     parser.add_argument('--limit',
                         default=200,
-                        help='Limit size of zip files, default to 200.')
+                        help='Limit size of zip files in MB, default to 200.')
 
     args = parser.parse_args()
     parser.print_help()
@@ -120,14 +121,14 @@ if __name__ == '__main__':
         id_list = []
         if valid_id:
             mkdir(args.zipdir)
-        for i in valid_id:
+        for i in tqdm(valid_id):
             if not id_start:
                 id_start = i
             if not id_end:
                 id_end = i
             cur_size = getsize(wave_dict[i])
             if accumulated_size + cur_size > max_size:
-                save_zip_script(join(args.zipdir, id_start+'-'+id_end), id_list, wave_dict, script_dict)
+                save_zip_script(join(args.zipdir, '-'.join([id_start, id_end, str(len(id_list))])), id_list, wave_dict, script_dict)
                 id_start = i
                 id_end = i
                 accumulated_size = cur_size
@@ -138,4 +139,4 @@ if __name__ == '__main__':
                 accumulated_size = accumulated_size + cur_size
                 id_list.append(i)
         if id_list:
-            save_zip_script(join(args.zipdir, id_start+'-'+id_end), id_list, wave_dict, script_dict)
+            save_zip_script(join(args.zipdir, '-'.join([id_start, id_end, str(len(id_list))])), id_list, wave_dict, script_dict)
