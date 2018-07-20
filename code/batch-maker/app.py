@@ -80,10 +80,11 @@ def process_wave(path):
 
 
 def save_zip_script(filename, id_list, wave_dict, script_dict):
-    script_file = open(filename+'.txt', 'w', encoding='utf-8')
+    script_file = open(filename+'.txt', 'wb')
+    script_file.write(codecs.BOM_UTF16_LE)
     zip_file = ZipFile(filename+'.zip', 'w', compression=ZIP_DEFLATED)
     for i in id_list:
-        script_file.writelines(i+'\t'+script_dict[i])
+        script_file.write((i+'\t'+script_dict[i]+'\n').encode('utf-16-le'))
         zip_file.write(wave_dict[i], arcname=i+'.wav')
     script_file.close()
     zip_file.close()

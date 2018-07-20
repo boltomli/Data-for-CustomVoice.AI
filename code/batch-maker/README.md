@@ -11,7 +11,7 @@ Refactor files to submit to address a few limitations.
 
 ## Usage
 
-Not useful yet. Development in progress.
+TODO: support more media types.
 
 ```shell
 virtualenv -p python3 venv
