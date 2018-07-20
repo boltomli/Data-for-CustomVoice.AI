@@ -11,6 +11,7 @@ from os.path import exists, getsize, isdir, isfile, join, splitext
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import chardet
+import magic
 from tqdm import tqdm
 
 
@@ -63,7 +64,7 @@ def process_script(path):
     else:
         for r,d,f in walk(path):
             for filename in f:
-                if splitext(filename)[1].lower() == '.txt':
+                if magic.from_file(join(r, filename), mime=True) == 'text/plain':
                     text = process_script_file(join(r, filename))
                     for line in text:
                         script_dict = process_dict(script_dict, process_script_line(line))
@@ -75,7 +76,7 @@ def process_wave(path):
     for r,d,f in walk(path):
         for filename in f:
             item = splitext(filename)
-            if item[0].isdigit() and item[1].lower() == '.wav':
+            if item[0].isdigit() and magic.from_file(join(r, filename), mime=True).startswith('audio/'):
                 wave_dict = process_dict(wave_dict, {item[0]: join(r, filename)})
     return wave_dict
 
@@ -96,10 +97,10 @@ if __name__ == '__main__':
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--wave',
                         default='data',
-                        help='Directory of wave files (*.wav).')
+                        help='Directory of wave files.')
     parser.add_argument('--text',
                         default='data',
-                        help='Script file or directory of script files (*.txt).')
+                        help='Script file or directory of script files.')
     parser.add_argument('--zipdir',
                         default='zippeddata',
                         help='Directory to save zipped data.')

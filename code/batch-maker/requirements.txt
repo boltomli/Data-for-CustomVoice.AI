@@ -1,2 +1,3 @@
 chardet
+python-magic
 tqdm
