@@ -61,9 +61,10 @@ def process_script(path):
     else:
         for r,d,f in walk(path):
             for filename in f:
-                text = process_script_file(filename)
-                for line in text:
-                    script_dict = process_dict(script_dict, process_script_line(line))
+                if splitext(filename)[1].lower() == '.txt':
+                    text = process_script_file(join(r, filename))
+                    for line in text:
+                        script_dict = process_dict(script_dict, process_script_line(line))
     return script_dict
 
 
@@ -73,7 +74,7 @@ def process_wave(path):
         for filename in f:
             item = splitext(filename)
             if item[0].isdigit() and item[1].lower() == '.wav':
-                wave_dict = process_dict(wave_dict, {item[0]: join(path, filename)})
+                wave_dict = process_dict(wave_dict, {item[0]: join(r, filename)})
     return wave_dict
 
 if __name__ == '__main__':
@@ -81,8 +82,10 @@ if __name__ == '__main__':
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--wave',
+                        default='data',
                         help='Directory of wave files (*.wav).')
     parser.add_argument('--text',
+                        default='data',
                         help='Script file or directory of script files (*.txt).')
 
     args = parser.parse_args()
