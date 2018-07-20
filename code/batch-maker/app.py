@@ -6,8 +6,9 @@
 
 import argparse
 import codecs
-from os import walk
-from os.path import exists, isdir, isfile, join, splitext
+from os import mkdir, walk
+from os.path import exists, getsize, isdir, isfile, join, splitext
+from zipfile import ZIP_DEFLATED, ZipFile
 
 import chardet
 
@@ -77,6 +78,16 @@ def process_wave(path):
                 wave_dict = process_dict(wave_dict, {item[0]: join(r, filename)})
     return wave_dict
 
+
+def save_zip_script(filename, id_list, wave_dict, script_dict):
+    script_file = open(filename+'.txt', 'w', encoding='utf-8')
+    zip_file = ZipFile(filename+'.zip', 'w', compression=ZIP_DEFLATED)
+    for i in id_list:
+        script_file.writelines(i+'\t'+script_dict[i])
+        zip_file.write(wave_dict[i], arcname=i+'.wav')
+    script_file.close()
+    zip_file.close()
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description=__doc__,
@@ -87,11 +98,43 @@ if __name__ == '__main__':
     parser.add_argument('--text',
                         default='data',
                         help='Script file or directory of script files (*.txt).')
+    parser.add_argument('--zipdir',
+                        default='zippeddata',
+                        help='Directory to save zipped data.')
+    parser.add_argument('--limit',
+                        default=200,
+                        help='Limit size of zip files, default to 200.')
 
     args = parser.parse_args()
+    parser.print_help()
 
-    if isdir(args.wave) and exists(args.text):
+    if isdir(args.wave) and exists(args.text) and not exists(args.zipdir):
         script_dict = process_script(args.text)
         wave_dict = process_wave(args.wave)
-    else:
-        parser.print_help()
+        valid_id = sorted([i for i in script_dict.keys() if i in wave_dict.keys()])
+        max_size = args.limit * 1024 * 1024
+        id_start = ''
+        id_end = ''
+        accumulated_size = 0
+        id_list = []
+        if valid_id:
+            mkdir(args.zipdir)
+        for i in valid_id:
+            if not id_start:
+                id_start = i
+            if not id_end:
+                id_end = i
+            cur_size = getsize(wave_dict[i])
+            if accumulated_size + cur_size > max_size:
+                save_zip_script(join(args.zipdir, id_start+'-'+id_end), id_list, wave_dict, script_dict)
+                id_start = i
+                id_end = i
+                accumulated_size = cur_size
+                id_list.clear()
+                id_list.append(i)
+            else:
+                id_end = i
+                accumulated_size = accumulated_size + cur_size
+                id_list.append(i)
+        if id_list:
+            save_zip_script(join(args.zipdir, id_start+'-'+id_end), id_list, wave_dict, script_dict)
