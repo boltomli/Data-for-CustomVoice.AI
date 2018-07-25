@@ -19,7 +19,7 @@ def process_script_file(script_file):
     '''Read script file file as text'''
     text_encoding = 'gbk'
     try:
-        text_encoding = chardet.detect(open(script_file, 'r').read())['encoding']
+        text_encoding = chardet.detect(open(script_file, 'rb').read())['encoding']
     except UnicodeDecodeError:
         text_encoding = 'utf-16'
     text_content = codecs.open(script_file, 'r', encoding=text_encoding).readlines()
