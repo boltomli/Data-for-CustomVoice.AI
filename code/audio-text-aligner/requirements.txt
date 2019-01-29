@@ -1,0 +1,6 @@
+aeneas
+chardet
+Flask
+flask-restplus
+Flask-Uploads
+python-magic

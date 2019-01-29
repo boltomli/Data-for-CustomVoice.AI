@@ -1,0 +1,7 @@
+*.bin
+*.dat
+.vscode/
+__pycache__/
+static/
+*.pyc
+venv/
