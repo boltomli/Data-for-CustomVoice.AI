@@ -11,7 +11,7 @@ from aeneas.executetask import ExecuteTask
 from aeneas.task import Task
 
 
-def process_files(text_file, audio_file):
+def process_files(text_file, audio_file, lang):
     '''Process files'''
     text = open(text_file, 'rb').read()
     try:
@@ -23,7 +23,7 @@ def process_files(text_file, audio_file):
         with codecs.open(text_file, 'wb', encoding='utf-8') as f:
             f.write(text)
 
-    config_string = 'task_language=ita|is_text_type=plain|os_task_file_format=json'
+    config_string = 'task_language='+lang+'|is_text_type=plain|os_task_file_format=json'
     task = Task(config_string=config_string)
     task.audio_file_path_absolute = audio_file
     task.text_file_path_absolute = text_file

@@ -9,11 +9,12 @@ import os
 import magic
 from flask import Flask, send_file
 from flask_restplus import Api, Resource
-from flask_uploads import (EXECUTABLES, SCRIPTS, AllExcept, UploadSet,
+from flask_uploads import (AUDIO, TEXT, UploadSet,
                            configure_uploads, patch_request_class)
 
 import align
 import parsers
+import utils
 
 # Settings
 DEBUG = False
@@ -30,7 +31,7 @@ NS = API.namespace('align')
 
 # Uploads
 
-UPLOADED_ATTEMPTS = UploadSet('attempts', AllExcept(SCRIPTS + EXECUTABLES))
+UPLOADED_ATTEMPTS = UploadSet('attempts', AUDIO + TEXT)
 configure_uploads(APP, UPLOADED_ATTEMPTS)
 patch_request_class(APP, 100 * 1024 * 1024) # 100M file size limit
 
@@ -43,9 +44,15 @@ class UploadAndAlign(Resource):
         args = parsers.UPLOAD_FILES.parse_args()
         text_file = UPLOADED_ATTEMPTS.save(args['text_file'])
         audio_file = UPLOADED_ATTEMPTS.save(args['audio_file'])
-        json_file = align.process_files(UPLOADED_ATTEMPTS.path(text_file), UPLOADED_ATTEMPTS.path(audio_file))
+        json_file = align.process_files(UPLOADED_ATTEMPTS.path(text_file), UPLOADED_ATTEMPTS.path(audio_file), args['lang'])
         mime = magic.from_file(json_file, mime=True)
         return send_file(json_file, mimetype=mime)
+
+@NS.route('/langs/')
+class AllowedLanguages(Resource):
+    def get(self):
+        '''Get allowed languages'''
+        return utils.allowed_languages()
 
 if __name__ == '__main__':
     APP.run(host='0.0.0.0')
