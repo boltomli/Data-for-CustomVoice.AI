@@ -14,6 +14,8 @@ from aeneas.task import Task
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize.punkt import PunktLanguageVars, PunktSentenceTokenizer
 
+import utils
+
 
 class ChineseLanguageVars(PunktLanguageVars):
     sent_end_chars = ('。', '！', '？', '”')
@@ -28,13 +30,16 @@ def process_files(text_file, audio_file, lang):
     except UnicodeDecodeError:
         text = codecs.open(text_file, 'rb', encoding='gbk').read()
     finally:
-        with codecs.open(text_file, 'wb', encoding='utf-8') as f:
-            text = text.replace('\r', ' ').replace('\n', ' ')
-            if (lang.lower() == 'zho'):
-                tokenizer = PunktSentenceTokenizer(lang_vars=ChineseLanguageVars)
-                sentences = tokenizer.tokenize(' '.join(jieba.cut(text)))
-            else:
+        text = text.replace('\r', ' ').replace('\n', ' ')
+        if (lang.lower() == 'zho'):
+            tokenizer = PunktSentenceTokenizer(lang_vars=ChineseLanguageVars)
+            sentences = tokenizer.tokenize(' '.join(jieba.cut(text)))
+        else:
+            try:
+                sentences = sent_tokenize(text, utils.allowed_languages()[lang])
+            except LookupError:
                 sentences = sent_tokenize(text)
+        with codecs.open(text_file, 'wb', encoding='utf-8') as f:
             f.write(linesep.join(sentences))
 
     config_string = 'task_language='+lang+'|is_text_type=plain|os_task_file_format=json'

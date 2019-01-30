@@ -9,7 +9,10 @@ from aeneas.language import Language
 
 def allowed_languages():
     '''Allowed languages'''
-    return Language.ALLOWED_VALUES
+    lang_dict = {}
+    for item in Language.CODE_TO_HUMAN_LIST:
+        lang_dict[item.split('\t')[0]] = item.split('\t')[1]
+    return lang_dict
 
 
 def download_punkt():

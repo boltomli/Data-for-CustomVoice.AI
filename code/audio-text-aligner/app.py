@@ -44,6 +44,8 @@ class UploadAndAlign(Resource):
         if not utils.download_punkt():
             errors.abort(code=500, message='Cannot download NLTK punkt data properly')
         args = parsers.UPLOAD_FILES.parse_args()
+        if args['lang'] not in utils.allowed_languages().keys():
+            errors.abort(code=500, message='Language is not supported yet, try eng, ita, zho, etc.')
         text_file = UPLOADED_ATTEMPTS.save(args['text_file'])
         audio_file = UPLOADED_ATTEMPTS.save(args['audio_file'])
         json_file = align.process_files(UPLOADED_ATTEMPTS.path(text_file), UPLOADED_ATTEMPTS.path(audio_file), args['lang'])
