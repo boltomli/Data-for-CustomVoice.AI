@@ -5,4 +5,5 @@ flask-restplus
 Flask-Uploads
 jieba
 nltk
+pydub
 python-magic
