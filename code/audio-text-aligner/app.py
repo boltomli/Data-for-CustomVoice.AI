@@ -8,9 +8,9 @@ import os
 
 import magic
 from flask import Flask, send_file
-from flask_restplus import Api, Resource
-from flask_uploads import (AUDIO, TEXT, UploadSet,
-                           configure_uploads, patch_request_class)
+from flask_restplus import Api, Resource, errors
+from flask_uploads import (AUDIO, TEXT, UploadSet, configure_uploads,
+                           patch_request_class)
 
 import align
 import parsers
@@ -41,6 +41,8 @@ class UploadAndAlign(Resource):
     @API.expect(parsers.UPLOAD_FILES)
     def post(self):
         '''Align audio and text from uploading'''
+        if not utils.download_punkt():
+            errors.abort(code=500, message='Cannot download NLTK punkt data properly')
         args = parsers.UPLOAD_FILES.parse_args()
         text_file = UPLOADED_ATTEMPTS.save(args['text_file'])
         audio_file = UPLOADED_ATTEMPTS.save(args['audio_file'])

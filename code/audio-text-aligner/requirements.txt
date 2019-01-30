@@ -3,4 +3,6 @@ chardet
 Flask
 flask-restplus
 Flask-Uploads
+jieba
+nltk
 python-magic

@@ -5,10 +5,18 @@
 '''This module aligns audio and text'''
 
 import codecs
+from os import linesep
 
 import chardet
+import jieba
 from aeneas.executetask import ExecuteTask
 from aeneas.task import Task
+from nltk.tokenize import sent_tokenize
+from nltk.tokenize.punkt import PunktLanguageVars, PunktSentenceTokenizer
+
+
+class ChineseLanguageVars(PunktLanguageVars):
+    sent_end_chars = ('。', '！', '？', '”')
 
 
 def process_files(text_file, audio_file, lang):
@@ -21,7 +29,13 @@ def process_files(text_file, audio_file, lang):
         text = codecs.open(text_file, 'rb', encoding='gbk').read()
     finally:
         with codecs.open(text_file, 'wb', encoding='utf-8') as f:
-            f.write(text)
+            text = text.replace('\r', ' ').replace('\n', ' ')
+            if (lang.lower() == 'zho'):
+                tokenizer = PunktSentenceTokenizer(lang_vars=ChineseLanguageVars)
+                sentences = tokenizer.tokenize(' '.join(jieba.cut(text)))
+            else:
+                sentences = sent_tokenize(text)
+            f.write(linesep.join(sentences))
 
     config_string = 'task_language='+lang+'|is_text_type=plain|os_task_file_format=json'
     task = Task(config_string=config_string)
