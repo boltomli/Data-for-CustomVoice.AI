@@ -48,9 +48,9 @@ class UploadAndAlign(Resource):
             errors.abort(code=500, message='Language is not supported yet, try eng, ita, zho, etc.')
         text_file = UPLOADED_ATTEMPTS.save(args['text_file'])
         audio_file = UPLOADED_ATTEMPTS.save(args['audio_file'])
-        json_file = align.process_files(UPLOADED_ATTEMPTS.path(text_file), UPLOADED_ATTEMPTS.path(audio_file), args['lang'])
-        mime = magic.from_file(json_file, mime=True)
-        return send_file(json_file, mimetype=mime)
+        result_file = align.process_files(UPLOADED_ATTEMPTS.path(text_file), UPLOADED_ATTEMPTS.path(audio_file), args['lang'])
+        mime = magic.from_file(result_file, mime=True)
+        return send_file(result_file, mimetype=mime)
 
 @NS.route('/langs/')
 class AllowedLanguages(Resource):
