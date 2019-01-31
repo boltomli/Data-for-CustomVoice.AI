@@ -48,7 +48,15 @@ class UploadAndAlign(Resource):
             errors.abort(code=500, message='Language is not supported yet, try eng, ita, zho, etc.')
         text_file = UPLOADED_ATTEMPTS.save(args['text_file'])
         audio_file = UPLOADED_ATTEMPTS.save(args['audio_file'])
-        result_file = align.process_files(UPLOADED_ATTEMPTS.path(text_file), UPLOADED_ATTEMPTS.path(audio_file), args['lang'])
+        return align.process_files(UPLOADED_ATTEMPTS.path(text_file), UPLOADED_ATTEMPTS.path(audio_file), args['lang'])
+
+@NS.route('/download/')
+class DownloadResult(Resource):
+    @API.expect(parsers.DOWNLOAD_FILES)
+    def post(self):
+        '''Download result zip file'''
+        args = parsers.DOWNLOAD_FILES.parse_args()
+        result_file = args['zip_file']
         mime = magic.from_file(result_file, mime=True)
         return send_file(result_file, mimetype=mime)
 

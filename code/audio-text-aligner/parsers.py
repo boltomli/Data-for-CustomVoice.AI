@@ -23,3 +23,9 @@ UPLOAD_FILES.add_argument('lang',
                           required=True,
                           default='eng',
                           help='Language (see langs endpoint for available values')
+
+DOWNLOAD_FILES = reqparse.RequestParser()
+DOWNLOAD_FILES.add_argument('zip_file',
+                          location='form',
+                          required=True,
+                          help='Zip file path (from upload)')

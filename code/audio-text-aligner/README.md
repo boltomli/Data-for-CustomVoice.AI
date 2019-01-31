@@ -11,3 +11,5 @@ pip install numpy
 pip install -r requirements.txt
 python app.py
 ```
+
+To download generated split audio and script, try `curl -X POST "http://localhost:5000/align/download/" -H "Content-Type: application/x-www-form-urlencoded" -d "zip_file=static%2Fupload%2Fattempts%2Fmyuploaded.mp3.audio_script.zip" > split.zip`.
