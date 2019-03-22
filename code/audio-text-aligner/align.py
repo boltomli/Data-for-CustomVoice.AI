@@ -15,6 +15,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 import chardet
 import jieba
 from aeneas.executetask import ExecuteTask
+from aeneas.runtimeconfiguration import RuntimeConfiguration
 from aeneas.task import Task
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize.punkt import PunktLanguageVars, PunktSentenceTokenizer
@@ -27,6 +28,15 @@ class ChineseLanguageVars(PunktLanguageVars):
     sent_end_chars = ('。', '！', '？', '”')
 
 
+def cut_sent(para):
+    para = re.sub('([。！？\?])([^”’])', r"\1\n\2", para)
+    para = re.sub('(\.{6})([^”’])', r"\1\n\2", para)
+    para = re.sub('(\…{2})([^”’])', r"\1\n\2", para)
+    para = re.sub('([。！？\?][”’])([^，。！？\?])', r'\1\n\2', para)
+    para = para.rstrip()
+    return para.split("\n")
+
+
 def process_files(text_file, audio_file, lang):
     '''Process files'''
     text = open(text_file, 'rb').read()
@@ -37,22 +47,27 @@ def process_files(text_file, audio_file, lang):
         text = codecs.open(text_file, 'rb', encoding='gbk').read()
     finally:
         text = text.replace('\r', ' ').replace('\n', ' ')
-        if (lang.lower() == 'zho'):
+        if lang.lower() == 'zho' or lang.lower() == 'cmn':
             tokenizer = PunktSentenceTokenizer(lang_vars=ChineseLanguageVars)
             sentences = tokenizer.tokenize(' '.join(jieba.cut(text)))
+        elif lang.lower() == 'jpn':
+            sentences = cut_sent(text)
         else:
             try:
                 sentences = sent_tokenize(text, utils.allowed_languages()[lang])
-            except LookupError:
+            except LookupError or TypeError:
                 sentences = sent_tokenize(text)
         with codecs.open(text_file, 'wb', encoding='utf-8') as f:
             f.write(linesep.join(sentences))
 
-    config_string = 'task_language='+lang+'|is_text_type=plain|os_task_file_format=json'
+    config_string = '|'.join(['task_language='+lang, 'is_text_type=plain', 'os_task_file_format=json'])
     task = Task(config_string=config_string)
     task.audio_file_path_absolute = audio_file
     task.text_file_path_absolute = text_file
-    ExecuteTask(task).execute()
+    rconf = task.rconf
+    if lang.lower() == 'jpn':
+        rconf[RuntimeConfiguration.TTS] = 'macos'
+    ExecuteTask(task, rconf).execute()
     result = json.loads(task.sync_map.json_string)
     with open(audio_file+'.txt', 'wb') as f:
         f.write(codecs.BOM_UTF16_LE)
