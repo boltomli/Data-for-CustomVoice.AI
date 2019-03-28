@@ -75,3 +75,7 @@ Archive files to upload should contain wave files only. Take [7-Zip](https://www
 ## Advanced data processing
 
 This basic guide assumes each wave contains one sentence (so the text is also one sentence per line). If you have only a big media file with many sentences, it should be preprocessed. See [advanced](code/README.md) for hints.
+
+## Suggestions or requests
+
+[![Feature Requests](http://feathub.com/boltomli/Data-for-CustomVoice.AI?format=svg)](http://feathub.com/boltomli/Data-for-CustomVoice.AI)
