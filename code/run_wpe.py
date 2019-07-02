@@ -6,17 +6,19 @@ from nara_wpe.utils import istft, stft
 from nara_wpe.wpe import wpe
 
 parser = argparse.ArgumentParser(description='de-reverb audio wave.')
-parser.add_argument('wavefile', metavar='WaveFile', type=str)
+parser.add_argument('inwave', metavar='InWaveFile', type=str)
+parser.add_argument('outwave', metavar='OutWaveFile', type=str)
 args = parser.parse_args()
 
 stft_options = dict(size=512, shift=128)
-sampling_rate = 16000
 delay = 3
 iterations = 5
 taps = 10
 
+data, sampling_rate = sf.read(args.inwave)
+
 signal_list = [
-    sf.read('WaveDir/'+args.wavefile)[0]
+    data
 ]
 y = np.stack(signal_list, axis=0)
 
@@ -31,4 +33,4 @@ Z = wpe(
 ).transpose(1, 2, 0)
 z = istft(Z, size=stft_options['size'], shift=stft_options['shift'])
 
-sf.write('WPEDir/'+args.wavefile, z[0], sampling_rate)
+sf.write(args.outwave, z[0], sampling_rate)
