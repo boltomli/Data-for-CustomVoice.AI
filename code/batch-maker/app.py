@@ -2,7 +2,7 @@
 
 # -*- coding: utf-8 -*-
 
-'''Match valid script ID and wave files to create batches to upload.'''
+'''Match valid text script and audio files in batch to upload to customvoice.ai.'''
 
 import argparse
 import codecs
@@ -11,6 +11,7 @@ from os.path import exists, getsize, isdir, isfile, join, splitext
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import chardet
+from gooey import Gooey
 from tqdm import tqdm
 
 
@@ -90,7 +91,11 @@ def save_zip_script(filename, id_list, wave_dict, script_dict):
     script_file.close()
     zip_file.close()
 
-if __name__ == '__main__':
+
+@Gooey(
+    program_name='BatchMaker'
+)
+def main():
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -140,3 +145,6 @@ if __name__ == '__main__':
                 id_list.append(i)
         if id_list:
             save_zip_script(join(args.zipdir, '-'.join([id_start, id_end, str(len(id_list))])), id_list, wave_dict, script_dict)
+
+if __name__ == '__main__':
+    main()
